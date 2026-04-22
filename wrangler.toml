@@ -1,0 +1,68 @@
+# ═══════════════════════════════════════════════════════════════
+# The Vault — Cloudflare Pages + D1 Configuration
+# Domain: https://thevault.win | https://www.thevault.win
+# ═══════════════════════════════════════════════════════════════
+
+name = "the-vault"
+compatibility_date = "2025-04-23"
+compatibility_flags = ["nodejs_compat"]
+
+# ─── Build Settings ───
+[build]
+command = "npm run build"
+
+# ─── D1 Database Binding ───
+[[d1_databases]]
+binding = "DB"
+database_name = "the-vault-db"
+# IMPORTANT: Replace with your actual D1 database ID after creating it:
+#   1. Create: npx wrangler d1 create the-vault-db
+#   2. Or check: npx wrangler d1 list
+#   3. Copy the UUID below
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+# ─── Public Environment Variables (safe to commit) ───
+[vars]
+NODE_ENV = "production"
+VITE_APP_URL = "https://thevault.win"
+
+# ═══════════════════════════════════════════════════════════════
+# SECRETS — Set these via Cloudflare Dashboard or wrangler CLI
+# NEVER commit actual secret values to this file!
+# ═══════════════════════════════════════════════════════════════
+#
+# Set via Dashboard:
+#   Workers & Pages → the-vault → Settings → Environment variables
+#
+# Set via wrangler CLI:
+#   echo "value" | npx wrangler secret put SECRET_NAME
+#
+# Required Secrets:
+# ─────────────────
+# APP_SECRET                          — JWT signing key (generate: openssl rand -base64 32)
+# STRIPE_SECRET_KEY                   — Stripe secret key (sk_test_... or sk_live_...)
+# VITE_STRIPE_PUBLISHABLE_KEY         — Stripe publishable key (pk_test_... or pk_live_...)
+# COINBASE_API_KEY                    — Coinbase Commerce API key
+# OPENAI_API_KEY                      — OpenAI API key (sk-...)
+#
+# Optional OAuth Secrets:
+# GOOGLE_CLIENT_ID                    — Google OAuth client ID
+# GOOGLE_CLIENT_SECRET                — Google OAuth client secret
+# GITHUB_CLIENT_ID                    — GitHub OAuth client ID
+# GITHUB_CLIENT_SECRET                — GitHub OAuth client secret
+# ═══════════════════════════════════════════════════════════════
+
+# ─── Custom Domains ───
+[[routes]]
+pattern = "thevault.win/*"
+custom_domain = true
+
+[[routes]]
+pattern = "www.thevault.win/*"
+custom_domain = true
+
+# ─── Redirect www to non-www ───
+[[redirects]]
+from = "https://www.thevault.win/*"
+to = "https://thevault.win/:splat"
+status = 301

@@ -1,0 +1,12 @@
+# Don't deploy these files to Vercel
+node_modules
+dist
+.git
+.vscode
+*.log
+db/seed*.ts
+.eslintrc
+.prettierrc
+README.md
+.env.local
+.env.*.local
